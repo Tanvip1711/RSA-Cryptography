@@ -1,0 +1,868 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>RSA Lab</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <div class="background-glow"></div>
+
+    <header class="navbar">
+
+        <div class="logo">
+            <span class="logo-icon">⌁</span>
+            <span>RSA<span class="logo-accent">LAB</span></span>
+        </div>
+
+        <div class="status">
+            <span id="statusDot" class="status-dot"></span>
+            <span id="statusText">Checking backend...</span>
+        </div>
+
+    </header>
+
+
+    <main class="container">
+
+        <!-- HERO -->
+
+        <section class="hero">
+
+            <div class="badge">
+                <span>●</span>
+                RSA CRYPTOGRAPHY
+            </div>
+
+            <h1>
+                Encrypt.
+                <span>Secure.</span>
+                Decrypt.
+            </h1>
+
+            <p>
+                A visual RSA encryption and decryption laboratory
+                powered by a C++ backend.
+            </p>
+
+        </section>
+
+
+        <!-- MAIN CRYPTO CARD -->
+
+        <section class="crypto-card">
+
+            <div class="tabs">
+
+                <button id="encryptTab" class="tab active">
+                    🔐 Encrypt
+                </button>
+
+                <button id="decryptTab" class="tab">
+                    🔓 Decrypt
+                </button>
+
+            </div>
+
+
+            <!-- ENCRYPT PANEL -->
+
+            <div id="encryptPanel" class="panel">
+
+                <label for="messageInput">
+                    MESSAGE
+                </label>
+
+                <textarea
+                    id="messageInput"
+                    placeholder="Enter your message here..."
+                    maxlength="500"
+                ></textarea>
+
+                <div class="input-footer">
+                    <span id="charCount">0 / 500</span>
+                </div>
+
+                <button id="encryptBtn" class="primary-btn">
+                    <span>🔐</span>
+                    Encrypt Message
+                </button>
+
+
+                <div class="result-box">
+
+                    <div class="result-header">
+                        <span>ENCRYPTED OUTPUT</span>
+
+                        <button id="copyEncryptBtn" class="copy-btn">
+                            Copy
+                        </button>
+                    </div>
+
+                    <div id="encryptedOutput" class="output">
+                        Your encrypted message will appear here.
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- DECRYPT PANEL -->
+
+            <div id="decryptPanel" class="panel hidden">
+
+                <label for="cipherInput">
+                    CIPHERTEXT
+                </label>
+
+                <textarea
+                    id="cipherInput"
+                    placeholder="Paste encrypted numbers here..."
+                ></textarea>
+
+                <button id="decryptBtn" class="primary-btn">
+                    <span>🔓</span>
+                    Decrypt Message
+                </button>
+
+
+                <div class="result-box">
+
+                    <div class="result-header">
+                        <span>DECRYPTED MESSAGE</span>
+
+                        <button id="copyDecryptBtn" class="copy-btn">
+                            Copy
+                        </button>
+                    </div>
+
+                    <div id="decryptedOutput" class="output">
+                        Your decrypted message will appear here.
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- LIVE STATS -->
+
+        <section class="stats-section">
+
+            <div class="stat-card">
+
+                <span class="stat-icon">✦</span>
+
+                <div>
+                    <small>MESSAGE LENGTH</small>
+                    <strong id="messageStat">0 chars</strong>
+                </div>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <span class="stat-icon">#</span>
+
+                <div>
+                    <small>CIPHERTEXT VALUES</small>
+                    <strong id="cipherStat">0 values</strong>
+                </div>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <span class="stat-icon">⚡</span>
+
+                <div>
+                    <small>LAST OPERATION</small>
+                    <strong id="operationStat">Waiting</strong>
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- RSA FLOW -->
+
+        <section class="flow-section">
+
+            <div class="section-heading">
+
+                <div>
+
+                    <span class="section-label">
+                        LIVE PROCESS
+                    </span>
+
+                    <h2>
+                        RSA Encryption Flow
+                    </h2>
+
+                </div>
+
+            </div>
+
+
+            <div class="rsa-flow">
+
+                <div class="flow-node" id="flowInput">
+
+                    <span>01</span>
+
+                    <strong>
+                        Message
+                    </strong>
+
+                    <small>
+                        Plaintext
+                    </small>
+
+                </div>
+
+
+                <div class="flow-line"></div>
+
+
+                <div class="flow-node" id="flowPublic">
+
+                    <span>02</span>
+
+                    <strong>
+                        Public Key
+                    </strong>
+
+                    <small>
+                        (e, n)
+                    </small>
+
+                </div>
+
+
+                <div class="flow-line"></div>
+
+
+                <div class="flow-node" id="flowCipher">
+
+                    <span>03</span>
+
+                    <strong>
+                        Ciphertext
+                    </strong>
+
+                    <small>
+                        Encrypted
+                    </small>
+
+                </div>
+
+
+                <div class="flow-line"></div>
+
+
+                <div class="flow-node" id="flowPrivate">
+
+                    <span>04</span>
+
+                    <strong>
+                        Private Key
+                    </strong>
+
+                    <small>
+                        (d, n)
+                    </small>
+
+                </div>
+
+
+                <div class="flow-line"></div>
+
+
+                <div class="flow-node" id="flowOutput">
+
+                    <span>05</span>
+
+                    <strong>
+                        Message
+                    </strong>
+
+                    <small>
+                        Decrypted
+                    </small>
+
+                </div>
+
+            </div>
+
+        </section>
+        <!-- OPERATION MONITOR -->
+
+<section class="monitor-section">
+
+    <div class="section-heading">
+
+        <div>
+
+            <span class="section-label">
+                LIVE CRYPTOGRAPHY
+            </span>
+
+            <h2>
+                Operation Monitor
+            </h2>
+
+            <p class="section-description">
+                Watch the RSA engine process your message in real time.
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <div class="monitor-card">
+
+        <!-- INPUT -->
+
+        <div class="monitor-stage">
+
+            <span class="monitor-label">
+                INPUT
+            </span>
+
+            <div
+                id="monitorInput"
+                class="monitor-value"
+            >
+                Waiting...
+            </div>
+
+        </div>
+
+
+        <div class="monitor-arrow">
+            →
+        </div>
+
+
+        <!-- KEY -->
+
+        <div class="monitor-stage">
+
+            <span class="monitor-label">
+                KEY
+            </span>
+
+            <div
+                id="monitorKey"
+                class="monitor-value"
+            >
+                —
+            </div>
+
+        </div>
+
+
+        <div class="monitor-arrow">
+            →
+        </div>
+
+
+        <!-- OUTPUT -->
+
+        <div class="monitor-stage">
+
+            <span class="monitor-label">
+                OUTPUT
+            </span>
+
+            <div
+                id="monitorOutput"
+                class="monitor-value"
+            >
+                Waiting...
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div class="operation-message" id="operationMessage">
+
+        Ready for an RSA operation.
+
+    </div>
+
+</section>
+
+        <!-- RSA MATHEMATICS -->
+
+<section class="math-section">
+
+    <div class="section-heading">
+
+        <div>
+
+            <span class="section-label">
+                RSA MATHEMATICS
+            </span>
+
+            <h2>
+                How The Keys Are Generated
+            </h2>
+
+            <p class="section-description">
+                Follow the mathematical steps used by the
+                C++ RSA engine to generate the key pair.
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <div class="math-flow">
+
+
+        <!-- STEP 1 -->
+
+        <div class="math-card" id="mathStep1">
+
+            <div class="math-number">
+                01
+            </div>
+
+            <div class="math-content">
+
+                <span class="math-label">
+                    CHOOSE TWO PRIME NUMBERS
+                </span>
+
+                <div class="math-equation">
+                    p = <strong id="mathP">61</strong>
+                    &nbsp;&nbsp;
+                    q = <strong id="mathQ">53</strong>
+                </div>
+
+                <p>
+                    RSA starts with two different prime numbers.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="math-arrow">↓</div>
+
+
+        <!-- STEP 2 -->
+
+        <div class="math-card" id="mathStep2">
+
+            <div class="math-number">
+                02
+            </div>
+
+            <div class="math-content">
+
+                <span class="math-label">
+                    CALCULATE MODULUS
+                </span>
+
+                <div class="math-equation">
+                    n = p × q =
+                    <strong id="mathN">3233</strong>
+                </div>
+
+                <p>
+                    The modulus becomes part of both
+                    the public and private keys.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="math-arrow">↓</div>
+
+
+        <!-- STEP 3 -->
+
+        <div class="math-card" id="mathStep3">
+
+            <div class="math-number">
+                03
+            </div>
+
+            <div class="math-content">
+
+                <span class="math-label">
+                    EULER'S TOTIENT
+                </span>
+
+                <div class="math-equation">
+                    φ(n) = (p − 1)(q − 1) =
+                    <strong id="mathPhi">3120</strong>
+                </div>
+
+                <p>
+                    This value is used to calculate the
+                    private exponent.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="math-arrow">↓</div>
+
+
+        <!-- STEP 4 -->
+
+        <div class="math-card" id="mathStep4">
+
+            <div class="math-number">
+                04
+            </div>
+
+            <div class="math-content">
+
+                <span class="math-label">
+                    PUBLIC EXPONENT
+                </span>
+
+                <div class="math-equation">
+                    e =
+                    <strong id="mathE">7</strong>
+                </div>
+
+                <p>
+                    e is selected such that gcd(e, φ(n)) = 1.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="math-arrow">↓</div>
+
+
+        <!-- STEP 5 -->
+
+        <div class="math-card" id="mathStep5">
+
+            <div class="math-number">
+                05
+            </div>
+
+            <div class="math-content">
+
+                <span class="math-label">
+                    PRIVATE EXPONENT
+                </span>
+
+                <div class="math-equation">
+                    d × e ≡ 1 mod φ(n)
+                </div>
+
+                <div class="math-result">
+                    d =
+                    <strong id="mathD">1783</strong>
+                </div>
+
+                <p>
+                    d is the modular inverse of e modulo φ(n).
+                </p>
+
+            </div>
+
+        </div>
+
+
+    </div>
+
+
+    <!-- FINAL KEY DISPLAY -->
+
+    <div class="final-keys">
+
+        <div class="final-key public-final">
+
+            <span>
+                PUBLIC KEY
+            </span>
+
+            <strong id="mathPublicKey">
+                (7, 3233)
+            </strong>
+
+            <small>
+                Used for encryption
+            </small>
+
+        </div>
+
+
+        <div class="key-divider"></div>
+
+
+        <div class="final-key private-final">
+
+            <span>
+                PRIVATE KEY
+            </span>
+
+            <strong id="mathPrivateKey">
+                (1783, 3233)
+            </strong>
+
+            <small>
+                Used for decryption
+            </small>
+
+        </div>
+
+    </div>
+
+</section>
+
+        <!-- KEY INFORMATION -->
+
+        <section class="keys-section">
+
+            <div class="section-heading">
+
+                <div>
+
+                    <span class="section-label">
+                        CRYPTOGRAPHIC PARAMETERS
+                    </span>
+
+                    <h2>
+                        RSA Key Information
+                    </h2>
+
+                </div>
+
+            </div>
+
+
+            <div class="key-grid">
+
+                <div class="key-card">
+
+                    <span>p</span>
+
+                    <strong id="keyP">—</strong>
+
+                    <small>
+                        Prime number
+                    </small>
+
+                </div>
+
+
+                <div class="key-card">
+
+                    <span>q</span>
+
+                    <strong id="keyQ">—</strong>
+
+                    <small>
+                        Prime number
+                    </small>
+
+                </div>
+
+
+                <div class="key-card">
+
+                    <span>n</span>
+
+                    <strong id="keyN">—</strong>
+
+                    <small>
+                        Modulus
+                    </small>
+
+                </div>
+
+
+                <div class="key-card">
+
+                    <span>φ(n)</span>
+
+                    <strong id="keyPhi">—</strong>
+
+                    <small>
+                        Euler's Totient
+                    </small>
+
+                </div>
+
+
+                <div class="key-card public">
+
+                    <span>e</span>
+
+                    <strong id="keyE">—</strong>
+
+                    <small>
+                        Public exponent
+                    </small>
+
+                </div>
+
+
+                <div class="key-card private">
+
+                    <span>d</span>
+
+                    <strong id="keyD">—</strong>
+
+                    <small>
+                        Private exponent
+                    </small>
+
+                </div>
+
+            </div>
+
+
+            <div class="key-pair">
+
+                <div>
+
+                    <span>
+                        PUBLIC KEY
+                    </span>
+
+                    <strong id="publicKey">
+                        Loading...
+                    </strong>
+
+                </div>
+
+
+                <div>
+
+                    <span>
+                        PRIVATE KEY
+                    </span>
+
+                    <strong id="privateKey">
+                        Loading...
+                    </strong>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- HOW RSA WORKS -->
+
+        <section class="how-section">
+
+            <span class="section-label">
+                UNDER THE HOOD
+            </span>
+
+            <h2>
+                How RSA Works
+            </h2>
+
+
+            <div class="steps">
+
+                <div class="step">
+
+                    <span>01</span>
+
+                    <h3>
+                        Generate Keys
+                    </h3>
+
+                    <p>
+                        Two prime numbers are used to calculate
+                        the RSA key pair.
+                    </p>
+
+                </div>
+
+
+                <div class="step">
+
+                    <span>02</span>
+
+                    <h3>
+                        Encrypt
+                    </h3>
+
+                    <p>
+                        The message is transformed using
+                        the public key.
+                    </p>
+
+                </div>
+
+
+                <div class="step">
+
+                    <span>03</span>
+
+                    <h3>
+                        Decrypt
+                    </h3>
+
+                    <p>
+                        The private key converts the ciphertext
+                        back into the original message.
+                    </p>
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <footer>
+
+        <span>
+            RSA LAB
+        </span>
+
+        <span>
+            Educational Cryptography Project
+        </span>
+
+    </footer>
+
+
+    <script src="script.js"></script>
+
+</body>
+
+</html>

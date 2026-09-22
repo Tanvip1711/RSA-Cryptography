@@ -1,27 +1,249 @@
-#include <iostream>
+#include "crow/app.h"
 #include "rsa.h"
 
-using namespace std;
+#include <string>
+#include <vector>
 
-int main() {
+int main()
+{
+    crow::SimpleApp app;
 
     RSA rsa;
 
-    // Temporary test primes
-    rsa.generateKeys(61, 53);
+    // Educational RSA key pair
+    if (!rsa.generateKeys(61, 53))
+    {
+        return 1;
+    }
 
-    rsa.displayKeys();
+    // ==========================================
+    // HOME / HEALTH CHECK
+    // ==========================================
 
-    long long message;
+    CROW_ROUTE(app, "/")
+    ([]()
+    {
+        crow::json::wvalue result;
 
-    cout << "\nEnter a number to encrypt: ";
-    cin >> message;
+        result["success"] = true;
+        result["message"] = "RSA Backend is running!";
+        result["version"] = "1.0";
 
-    long long encrypted = rsa.encrypt(message);
-    long long decrypted = rsa.decrypt(encrypted);
+        return crow::response(result);
+    });
 
-    cout << "\nEncrypted: " << encrypted << endl;
-    cout << "Decrypted: " << decrypted << endl;
 
-    return 0;
+    // ==========================================
+    // GET RSA KEYS
+    // ==========================================
+
+    CROW_ROUTE(app, "/keys")
+    ([&rsa]()
+    {
+        crow::json::wvalue result;
+
+        result["success"] = true;
+
+        result["p"] = rsa.getP();
+        result["q"] = rsa.getQ();
+        result["n"] = rsa.getN();
+        result["phi"] = rsa.getPhi();
+
+        result["public_key"]["e"] = rsa.getE();
+        result["public_key"]["n"] = rsa.getN();
+
+        result["private_key"]["d"] = rsa.getD();
+        result["private_key"]["n"] = rsa.getN();
+
+        return crow::response(result);
+    });
+
+
+    // ==========================================
+    // ENCRYPT NUMBER
+    // ==========================================
+
+    CROW_ROUTE(app, "/encrypt").methods(crow::HTTPMethod::POST)
+    ([&rsa](const crow::request& req)
+    {
+        auto body = crow::json::load(req.body);
+
+        if (!body)
+        {
+            return crow::response(400, "Invalid JSON");
+        }
+
+        if (!body.has("message"))
+        {
+            return crow::response(400, "Missing 'message'");
+        }
+
+        try
+        {
+            long long message = body["message"].i();
+
+            long long encrypted = rsa.encrypt(message);
+
+            crow::json::wvalue result;
+
+            result["success"] = true;
+            result["message"] = message;
+            result["encrypted"] = encrypted;
+
+            return crow::response(result);
+        }
+        catch (const std::exception& error)
+        {
+            return crow::response(400, error.what());
+        }
+    });
+
+
+    // ==========================================
+    // DECRYPT NUMBER
+    // ==========================================
+
+    CROW_ROUTE(app, "/decrypt").methods(crow::HTTPMethod::POST)
+    ([&rsa](const crow::request& req)
+    {
+        auto body = crow::json::load(req.body);
+
+        if (!body)
+        {
+            return crow::response(400, "Invalid JSON");
+        }
+
+        if (!body.has("cipher"))
+        {
+            return crow::response(400, "Missing 'cipher'");
+        }
+
+        try
+        {
+            long long cipher = body["cipher"].i();
+
+            long long decrypted = rsa.decrypt(cipher);
+
+            crow::json::wvalue result;
+
+            result["success"] = true;
+            result["cipher"] = cipher;
+            result["decrypted"] = decrypted;
+
+            return crow::response(result);
+        }
+        catch (const std::exception& error)
+        {
+            return crow::response(400, error.what());
+        }
+    });
+
+
+    // ==========================================
+    // ENCRYPT TEXT
+    // ==========================================
+
+    CROW_ROUTE(app, "/encrypt-text").methods(crow::HTTPMethod::POST)
+    ([&rsa](const crow::request& req)
+    {
+        auto body = crow::json::load(req.body);
+
+        if (!body)
+        {
+            return crow::response(400, "Invalid JSON");
+        }
+
+        if (!body.has("message"))
+        {
+            return crow::response(400, "Missing 'message'");
+        }
+
+        try
+        {
+            std::string message = body["message"].s();
+
+            if (message.empty())
+            {
+                return crow::response(400, "Message cannot be empty");
+            }
+
+            std::vector<long long> encrypted = rsa.encryptText(message);
+
+            crow::json::wvalue result;
+
+            result["success"] = true;
+            result["message"] = message;
+
+            crow::json::wvalue::list encryptedList;
+
+            for (long long value : encrypted)
+            {
+                encryptedList.push_back(value);
+            }
+
+            result["encrypted"] = std::move(encryptedList);
+
+            return crow::response(result);
+        }
+        catch (const std::exception& error)
+        {
+            return crow::response(400, error.what());
+        }
+    });
+
+
+    // ==========================================
+    // DECRYPT TEXT
+    // ==========================================
+
+    CROW_ROUTE(app, "/decrypt-text").methods(crow::HTTPMethod::POST)
+    ([&rsa](const crow::request& req)
+    {
+        auto body = crow::json::load(req.body);
+
+        if (!body)
+        {
+            return crow::response(400, "Invalid JSON");
+        }
+
+        if (!body.has("cipher"))
+        {
+            return crow::response(400, "Missing 'cipher'");
+        }
+
+        try
+        {
+            std::vector<long long> cipher;
+
+            for (const auto& value : body["cipher"])
+            {
+                cipher.push_back(value.i());
+            }
+
+            if (cipher.empty())
+            {
+                return crow::response(400, "Cipher cannot be empty");
+            }
+
+            std::string decrypted = rsa.decryptText(cipher);
+
+            crow::json::wvalue result;
+
+            result["success"] = true;
+            result["decrypted"] = decrypted;
+
+            return crow::response(result);
+        }
+        catch (const std::exception& error)
+        {
+            return crow::response(400, error.what());
+        }
+    });
+
+
+    // ==========================================
+    // START SERVER
+    // ==========================================
+
+    app.port(18080).multithreaded().run();
 }
