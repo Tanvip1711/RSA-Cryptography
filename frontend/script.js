@@ -222,6 +222,13 @@ encryptBtn.addEventListener("click", async () => {
             `[${data.encrypted.join(", ")}]`; 
  
         encryptedOutput.textContent = encryptedText; 
+        if (cipherStat) {
+    cipherStat.textContent = `${data.encrypted.length} values`;
+}
+
+if (operationStat) {
+    operationStat.textContent = "Encrypted";
+}
  
         // Update operation monitor 
  
@@ -334,6 +341,14 @@ decryptBtn.addEventListener("click", async () => {
  
         decryptedOutput.textContent = 
             data.decrypted; 
+
+            if (cipherStat) {
+    cipherStat.textContent = `${cipher.length} values`;
+}
+
+if (operationStat) {
+    operationStat.textContent = "Decrypted";
+}
  
         // Update operation monitor 
  
