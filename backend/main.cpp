@@ -178,7 +178,7 @@ int main()
 
             for (long long value : encrypted)
             {
-                encryptedList.push_back(value);
+                  encryptedList.push_back(crow::json::wvalue(static_cast<int64_t>(value)));
             }
 
             result["encrypted"] = std::move(encryptedList);
