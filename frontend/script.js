@@ -1,5 +1,4 @@
 const API_URL = "https://rsa-cryptography.onrender.com"; 
- 
 // =============================== 
 // ELEMENTS 
 // =============================== 
