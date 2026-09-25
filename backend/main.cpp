@@ -1,6 +1,6 @@
 #include "crow/app.h"
 #include "rsa.h"
-
+#include <cstdlib>
 #include <string>
 #include <vector>
 
@@ -245,5 +245,8 @@ int main()
     // START SERVER
     // ==========================================
 
-    app.port(18080).multithreaded().run();
+const char* portEnv = std::getenv("PORT");
+int port = portEnv ? std::stoi(portEnv) : 18080;
+
+app.bindaddr("0.0.0.0").port(port).multithreaded().run();
 }
