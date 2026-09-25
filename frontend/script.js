@@ -1,4 +1,4 @@
-const API_URL = "http://localhost:18080"; 
+const API_URL = "https://rsa-cryptography.onrender.com"; 
  
 // =============================== 
 // ELEMENTS 
