@@ -1,12 +1,21 @@
 #include "crow/app.h"
+#include "crow/middlewares/cors.h"
 #include "rsa.h"
-#include <cstdlib>
+
 #include <string>
 #include <vector>
+#include <cstdlib>
 
 int main()
 {
-    crow::SimpleApp app;
+    crow::App<crow::CORSHandler> app;
+
+auto& cors = app.get_middleware<crow::CORSHandler>();
+
+cors.global()
+    .origin("*")
+    .methods(crow::HTTPMethod::GET, crow::HTTPMethod::POST, crow::HTTPMethod::OPTIONS)
+    .headers("Content-Type");
 
     RSA rsa;
 
